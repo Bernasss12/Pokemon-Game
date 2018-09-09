@@ -36,8 +36,9 @@ public class Actor {
         if (state == EnumActorState.WALKING){
             walkTimer += delta;
             animationTimer += delta;
-            drawX = Interpolation.linear.apply(srcX, destX, walkTimer / Settings.TIME_PER_TILE);
-            drawY = Interpolation.linear.apply(srcY, destY, walkTimer / Settings.TIME_PER_TILE);
+            this.drawX = Interpolation.linear.apply(srcX, destX, walkTimer / Settings.TIME_PER_TILE);
+            this.drawY = Interpolation.linear.apply(srcY, destY, walkTimer / Settings.TIME_PER_TILE);
+
             if(walkTimer > Settings.TIME_PER_TILE){
                 animationTimer -= (walkTimer - Settings.TIME_PER_TILE);
                 finishMove();
@@ -48,13 +49,22 @@ public class Actor {
                 }
             }
         }
+        System.out.println("XY: " + this.x + "   " + this.y);
+        System.out.println("DR: " + this.drawX + " " + this.drawY);
         moveRequestThisFrame = false;
     }
 
     public boolean move(EnumActorFacing dir){
-        if(state == EnumActorState.WALKING)if(direction == dir) moveRequestThisFrame = true;
-        if(x+dir.getX() < 0 || x+dir.getX() >= tileMap.getWidth() || y+dir.getY() < 0 || y+dir.getY() >= tileMap.getHeight()) return false;
-        if (tileMap.getTile(x+dir.getX(), y+dir.getY()).getActor() != null) return false;
+        if(state == EnumActorState.WALKING){
+            if(direction == dir) moveRequestThisFrame = true;
+            return false;
+        }
+        if(x+dir.getX() < 0 || x+dir.getX() >= tileMap.getWidth() || y+dir.getY() < 0 || y+dir.getY() >= tileMap.getHeight()){
+            return false;
+        }
+        if (tileMap.getTile(x+dir.getX(), y+dir.getY()).getActor() != null) {
+            return false;
+        }
         initializeMove(dir);
         tileMap.getTile(x, y).setActor(null);
         x += dir.getX();
@@ -64,6 +74,7 @@ public class Actor {
     }
 
     private void initializeMove(EnumActorFacing dir){
+        this.direction = dir;
         this.srcX = x;
         this.srcY = y;
         this.destX = srcX + dir.getX();

@@ -88,7 +88,7 @@ public class GameScreen extends AbstractScreen {
                         Settings.SCALED_TILE_SIZE);
             }
         }
-        batch.draw(actor.getSprite(),
+        batch.draw(brendan,
                 worldStartX + actor.getDrawX()* Settings.SCALED_TILE_SIZE,
                 worldStartY + actor.getDrawY()* Settings.SCALED_TILE_SIZE,
                 Settings.SCALED_TILE_SIZE * 1.0f,
