@@ -9,16 +9,16 @@ public class Actor {
     private int x, y;
     private TileMap tileMap;
     private EnumActorFacing direction;
+    private EnumActorState state;
 
     private float drawX, drawY, walkTimer;
     private int srcX, srcY, destX, destY;
     
     private float animationTimer;
     private boolean moveRequestThisFrame;
-
-    private EnumActorState state;
-
     private AnimationSet animations;
+
+    private float refacingTimer;
 
     public Actor(TileMap tileMap, int x, int y, AnimationSet animations) {
         this.tileMap = tileMap;
@@ -33,6 +33,13 @@ public class Actor {
     }
 
     public void update(float delta) {
+        if (state == EnumActorState.REFACING){
+            refacingTimer += delta;
+            if(refacingTimer > Settings.REFACING_TIME){
+                refacingTimer = 0f;
+                state = EnumActorState.STANDING;
+            }
+        }
         if (state == EnumActorState.WALKING){
             walkTimer += delta;
             animationTimer += delta;
@@ -49,14 +56,21 @@ public class Actor {
                 }
             }
         }
-        System.out.println("XY: " + this.x + "   " + this.y);
-        System.out.println("DR: " + this.drawX + " " + this.drawY);
         moveRequestThisFrame = false;
+    }
+
+    public void reface(EnumActorFacing dir){
+        if(direction != dir) direction = dir;
+        state = EnumActorState.REFACING;
     }
 
     public boolean move(EnumActorFacing dir){
         if(state == EnumActorState.WALKING){
             if(direction == dir) moveRequestThisFrame = true;
+            return false;
+        }
+        if(dir != direction || state == EnumActorState.REFACING){
+            reface(dir);
             return false;
         }
         if(x+dir.getX() < 0 || x+dir.getX() >= tileMap.getWidth() || y+dir.getY() < 0 || y+dir.getY() >= tileMap.getHeight()){
@@ -116,6 +130,8 @@ public class Actor {
             case WALKING:
                 return animations.getWalking(direction).getKeyFrame(animationTimer);
             case STANDING:
+                return animations.getStanding(direction);
+            case REFACING:
                 return animations.getStanding(direction);
             default:
                 return animations.getStanding(EnumActorFacing.N);
