@@ -8,7 +8,7 @@ import dev.bernasss12.utilities.AnimationSet;
 public class Actor {
     private int x, y;
     private TileMap tileMap;
-    private EnumActorFacing direction;
+    private EnumFacing direction;
     private EnumActorState state;
 
     private float drawX, drawY, walkTimer;
@@ -29,7 +29,7 @@ public class Actor {
         this.animations = animations;
         tileMap.getTile(x, y).setActor(this);
         this.state = EnumActorState.STANDING;
-        this.direction = EnumActorFacing.S;
+        this.direction = EnumFacing.S;
     }
 
     public void update(float delta) {
@@ -59,12 +59,13 @@ public class Actor {
         moveRequestThisFrame = false;
     }
 
-    public void reface(EnumActorFacing dir){
+    public void reface(EnumFacing dir){
         if(direction != dir) direction = dir;
         state = EnumActorState.REFACING;
     }
 
-    public boolean move(EnumActorFacing dir){
+    public boolean move(EnumFacing dir){
+        //Check State
         if(state == EnumActorState.WALKING){
             if(direction == dir) moveRequestThisFrame = true;
             return false;
@@ -73,11 +74,26 @@ public class Actor {
             reface(dir);
             return false;
         }
+        //Check TileMap Dimensions
         if(x+dir.getX() < 0 || x+dir.getX() >= tileMap.getWidth() || y+dir.getY() < 0 || y+dir.getY() >= tileMap.getHeight()){
             return false;
         }
+        //Check Tile
         if (tileMap.getTile(x+dir.getX(), y+dir.getY()).getActor() != null) {
             return false;
+        }
+        if(tileMap.getTile(x+dir.getX(), y + dir.getY()).getType() != EnumTileType.NORMAL){
+            switch (tileMap.getTile(x+dir.getX(), y + dir.getY()).getType()){
+                case LEDGE:
+                    if(tileMap.getTile(x+dir.getX(), y + dir.getY()).getSides().contains(dir)){
+                        reface(dir);
+                        return false;
+                    }
+                    break;
+                case SOLID:
+                    reface(dir);
+                    return false;
+            }
         }
         initializeMove(dir);
         tileMap.getTile(x, y).setActor(null);
@@ -87,7 +103,7 @@ public class Actor {
         return true;
     }
 
-    private void initializeMove(EnumActorFacing dir){
+    private void initializeMove(EnumFacing dir){
         this.direction = dir;
         this.srcX = x;
         this.srcY = y;
@@ -134,7 +150,7 @@ public class Actor {
             case REFACING:
                 return animations.getStanding(direction);
             default:
-                return animations.getStanding(EnumActorFacing.N);
+                return animations.getStanding(EnumFacing.N);
         }
     }
 }

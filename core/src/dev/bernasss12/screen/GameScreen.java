@@ -9,9 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.bernasss12.PkmnMain;
 import dev.bernasss12.Settings;
 import dev.bernasss12.controller.PlayerController;
-import dev.bernasss12.model.Actor;
-import dev.bernasss12.model.GameCamera;
-import dev.bernasss12.model.TileMap;
+import dev.bernasss12.model.*;
 import dev.bernasss12.utilities.AnimationSet;
 
 public class GameScreen extends AbstractScreen {
@@ -88,6 +86,8 @@ public class GameScreen extends AbstractScreen {
                         Settings.SCALED_TILE_SIZE);
             }
         }
+        tileMap.getTile(3, 3).setType(EnumTileType.LEDGE);
+        tileMap.getTile(3, 3).addSide(EnumFacing.UP);
         batch.draw(actor.getSprite(),
                 worldStartX + actor.getDrawX()* Settings.SCALED_TILE_SIZE,
                 worldStartY + actor.getDrawY()* Settings.SCALED_TILE_SIZE,

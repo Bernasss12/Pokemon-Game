@@ -1,6 +1,6 @@
 package dev.bernasss12.model;
 
-public enum EnumTerrain {
+public enum EnumTileTerrain {
 
     littleroot_grass,
 

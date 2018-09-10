@@ -3,7 +3,7 @@ package dev.bernasss12.controller;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import dev.bernasss12.model.Actor;
-import dev.bernasss12.model.EnumActorFacing;
+import dev.bernasss12.model.EnumFacing;
 
 public class PlayerController extends InputAdapter {
 
@@ -55,19 +55,19 @@ public class PlayerController extends InputAdapter {
 
     public void update(float delta){
         if(up){
-            player.move(EnumActorFacing.UP);
+            player.move(EnumFacing.UP);
             return;
         }
         if(down){
-            player.move(EnumActorFacing.DOWN);
+            player.move(EnumFacing.DOWN);
             return;
         }
         if(right){
-            player.move(EnumActorFacing.RIGHT);
+            player.move(EnumFacing.RIGHT);
             return;
         }
         if(left){
-            player.move(EnumActorFacing.LEFT);
+            player.move(EnumFacing.LEFT);
             return;
         }
     }

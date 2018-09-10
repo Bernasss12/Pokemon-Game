@@ -11,7 +11,7 @@ public class TileMap {
          tileMap = new Tile[width][height];
          for(int x = 0; x < width; x++){
              for(int y = 0; y < height; y++){
-                 tileMap[x][y] = new Tile(EnumTerrain.littleroot_grass);
+                 tileMap[x][y] = new Tile(EnumTileTerrain.littleroot_grass);
              }
          }
     }
