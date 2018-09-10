@@ -48,10 +48,10 @@ public class GameScreen extends AbstractScreen {
 
 
         AnimationSet animations = new AnimationSet(
-                new Animation(Settings.TIME_PER_TILE/2f, walking.findRegion("brendan_walking_north"), Animation.PlayMode.LOOP_PINGPONG),
-                new Animation(Settings.TIME_PER_TILE/2f, walking.findRegion("brendan_walking_south"), Animation.PlayMode.LOOP_PINGPONG),
-                new Animation(Settings.TIME_PER_TILE/2f, walking.findRegion("brendan_walking_east"), Animation.PlayMode.LOOP_PINGPONG),
-                new Animation(Settings.TIME_PER_TILE/2f, walking.findRegion("brendan_walking_west"), Animation.PlayMode.LOOP_PINGPONG),
+                new Animation(Settings.TIME_PER_TILE/2f, walking.findRegions("brendan_walking_north"), Animation.PlayMode.LOOP_PINGPONG),
+                new Animation(Settings.TIME_PER_TILE/2f, walking.findRegions("brendan_walking_south"), Animation.PlayMode.LOOP_PINGPONG),
+                new Animation(Settings.TIME_PER_TILE/2f, walking.findRegions("brendan_walking_east"), Animation.PlayMode.LOOP_PINGPONG),
+                new Animation(Settings.TIME_PER_TILE/2f, walking.findRegions("brendan_walking_west"), Animation.PlayMode.LOOP_PINGPONG),
                 standing.findRegion("brendan_standing_north"),
                 standing.findRegion("brendan_standing_south"),
                 standing.findRegion("brendan_standing_east"),
@@ -88,7 +88,7 @@ public class GameScreen extends AbstractScreen {
                         Settings.SCALED_TILE_SIZE);
             }
         }
-        batch.draw(brendan,
+        batch.draw(actor.getSprite(),
                 worldStartX + actor.getDrawX()* Settings.SCALED_TILE_SIZE,
                 worldStartY + actor.getDrawY()* Settings.SCALED_TILE_SIZE,
                 Settings.SCALED_TILE_SIZE * 1.0f,
