@@ -2,16 +2,16 @@ package dev.bernasss12.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import dev.bernasss12.model.Actor;
+import dev.bernasss12.model.EntityActor;
 import dev.bernasss12.model.EnumFacing;
 
 public class PlayerController extends InputAdapter {
 
-    private Actor player;
+    private EntityActor player;
 
     private boolean up, down, left, right;
 
-    public PlayerController(Actor player) {
+    public PlayerController(EntityActor player) {
         this.player = player;
     }
 

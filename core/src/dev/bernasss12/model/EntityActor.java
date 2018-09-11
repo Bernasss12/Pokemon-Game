@@ -5,11 +5,12 @@ import com.badlogic.gdx.math.Interpolation;
 import dev.bernasss12.Settings;
 import dev.bernasss12.utilities.AnimationSet;
 
-public class Actor {
+public class EntityActor extends Entity{
     private int x, y;
     private TileMap tileMap;
     private EnumFacing direction;
     private EnumActorState state;
+    private EnumActorState previousState;
 
     private float drawX, drawY, walkTimer;
     private int srcX, srcY, destX, destY;
@@ -19,8 +20,9 @@ public class Actor {
     private AnimationSet animations;
 
     private float refacingTimer;
+    private boolean refacing;
 
-    public Actor(TileMap tileMap, int x, int y, AnimationSet animations) {
+    public EntityActor(TileMap tileMap, int x, int y, AnimationSet animations) {
         this.tileMap = tileMap;
         this.x = x;
         this.y = y;
@@ -35,9 +37,12 @@ public class Actor {
     public void update(float delta) {
         if (state == EnumActorState.REFACING){
             refacingTimer += delta;
+            animationTimer += 0.5f * delta;
             if(refacingTimer > Settings.REFACING_TIME){
-                refacingTimer = 0f;
-                state = EnumActorState.STANDING;
+                if(!refacing) {
+                    refacingTimer = 0f;
+                    state = previousState;
+                }
             }
         }
         if (state == EnumActorState.WALKING){
@@ -56,22 +61,22 @@ public class Actor {
                 }
             }
         }
+        refacing = false;
         moveRequestThisFrame = false;
     }
 
     public void reface(EnumFacing dir){
         if(direction != dir) direction = dir;
-        state = EnumActorState.REFACING;
+        if(state != EnumActorState.REFACING){
+            previousState = state;
+            state = EnumActorState.REFACING;
+        }
     }
 
     public boolean move(EnumFacing dir){
         //Check State
         if(state == EnumActorState.WALKING){
             if(direction == dir) moveRequestThisFrame = true;
-            return false;
-        }
-        if(dir != direction || state == EnumActorState.REFACING){
-            reface(dir);
             return false;
         }
         //Check TileMap Dimensions
@@ -86,14 +91,20 @@ public class Actor {
             switch (tileMap.getTile(x+dir.getX(), y + dir.getY()).getType()){
                 case LEDGE:
                     if(tileMap.getTile(x+dir.getX(), y + dir.getY()).getSides().contains(dir)){
+                        if(state == EnumActorState.REFACING) refacing = true;
                         reface(dir);
                         return false;
                     }
                     break;
                 case SOLID:
+                    if(state == EnumActorState.REFACING) refacing = true;
                     reface(dir);
                     return false;
             }
+        }
+        if(dir != direction || state == EnumActorState.REFACING){
+            reface(dir);
+            return false;
         }
         initializeMove(dir);
         tileMap.getTile(x, y).setActor(null);
@@ -148,7 +159,7 @@ public class Actor {
             case STANDING:
                 return animations.getStanding(direction);
             case REFACING:
-                return animations.getStanding(direction);
+                return animations.getWalking(direction).getKeyFrame(animationTimer);
             default:
                 return animations.getStanding(EnumFacing.N);
         }

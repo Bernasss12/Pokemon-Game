@@ -1,7 +1,6 @@
 package dev.bernasss12.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,12 +17,14 @@ public class GameScreen extends AbstractScreen {
 
     private TileMap tileMap;
 
-    private Actor actor;
+    private EntityActor actor;
+    private EntityObject oTree;
 
     private SpriteBatch batch;
 
     private Texture brendan;
     private Texture grass;
+    private Texture tree;
 
     private PlayerController controller;
 
@@ -38,6 +39,7 @@ public class GameScreen extends AbstractScreen {
 
         brendan = new Texture("brendan_standing_south.png");
         grass = new Texture("littleroot_grass.png");
+        tree = new Texture("littleroot_tree.png");
 
         batch = new SpriteBatch();
 
@@ -56,7 +58,11 @@ public class GameScreen extends AbstractScreen {
                 standing.findRegion("brendan_standing_west")
                 );
 
-        actor = new Actor(tileMap,0, 0, animations);
+        actor = new EntityActor(tileMap,0, 0, animations);
+
+        oTree = new EntityObject(tileMap, 7, 7, true);
+        oTree.setTileSize(2, 2);
+        oTree.setDrawSize(2f, 2.5f);
 
         controller = new PlayerController(actor);
     }
@@ -86,8 +92,14 @@ public class GameScreen extends AbstractScreen {
                         Settings.SCALED_TILE_SIZE);
             }
         }
-        tileMap.getTile(3, 3).setType(EnumTileType.LEDGE);
-        tileMap.getTile(3, 3).addSide(EnumFacing.UP);
+
+        batch.draw(tree,
+                worldStartX + oTree.getX()* Settings.SCALED_TILE_SIZE,
+                worldStartY + oTree.getY()* Settings.SCALED_TILE_SIZE,
+                Settings.SCALED_TILE_SIZE * oTree.getDrawWidth(),
+                Settings.SCALED_TILE_SIZE * oTree.getDrawHeight());
+
+
         batch.draw(actor.getSprite(),
                 worldStartX + actor.getDrawX()* Settings.SCALED_TILE_SIZE,
                 worldStartY + actor.getDrawY()* Settings.SCALED_TILE_SIZE,

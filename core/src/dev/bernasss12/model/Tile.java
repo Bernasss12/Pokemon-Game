@@ -6,7 +6,7 @@ import java.util.List;
 public class Tile {
 
     private EnumTileTerrain terrain;
-    private Actor actor;
+    private EntityActor actor;
     private EnumTileType type;
     private List<EnumFacing> sides;
 
@@ -16,11 +16,11 @@ public class Tile {
         this.sides = new ArrayList<EnumFacing>();
     }
 
-    public void setActor(Actor actor) {
+    public void setActor(EntityActor actor) {
         this.actor = actor;
     }
 
-    public Actor getActor() {
+    public EntityActor getActor() {
         return actor;
     }
 
