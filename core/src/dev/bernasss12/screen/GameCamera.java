@@ -1,4 +1,4 @@
-package dev.bernasss12.model;
+package dev.bernasss12.screen;
 
 public class GameCamera {
     private float cameraX = 0f;

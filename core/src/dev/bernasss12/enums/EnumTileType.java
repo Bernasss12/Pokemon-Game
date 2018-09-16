@@ -1,4 +1,4 @@
-package dev.bernasss12.model;
+package dev.bernasss12.enums;
 
 public enum EnumTileType {
     NORMAL,

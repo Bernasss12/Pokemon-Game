@@ -3,6 +3,9 @@ package dev.bernasss12.model;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import dev.bernasss12.Settings;
+import dev.bernasss12.enums.EnumActorState;
+import dev.bernasss12.enums.EnumFacing;
+import dev.bernasss12.enums.EnumTileType;
 import dev.bernasss12.utilities.AnimationSet;
 
 public class EntityActor extends Entity{
@@ -23,6 +26,7 @@ public class EntityActor extends Entity{
     private boolean refacing;
 
     public EntityActor(TileMap tileMap, int x, int y, AnimationSet animations) {
+        super(tileMap, x, y);
         this.tileMap = tileMap;
         this.x = x;
         this.y = y;
@@ -34,7 +38,11 @@ public class EntityActor extends Entity{
         this.direction = EnumFacing.S;
     }
 
+    @Override
     public void update(float delta) {
+        if(tileMap.getTile(x, y).getType() == EnumTileType.SOLID){
+            System.out.println("Collision");
+        }
         if (state == EnumActorState.REFACING){
             refacingTimer += delta;
             animationTimer += 0.5f * delta;
@@ -128,8 +136,8 @@ public class EntityActor extends Entity{
 
     private void finishMove(){
         state = EnumActorState.STANDING;
-        this.drawX = x;
-        this.drawY = y;
+        this.drawX = destX;
+        this.drawY = destY;
         this.srcX = 0;
         this.srcY = 0;
         this.destX = 0;

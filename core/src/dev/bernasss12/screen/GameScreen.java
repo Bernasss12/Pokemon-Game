@@ -8,19 +8,23 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.bernasss12.PkmnMain;
 import dev.bernasss12.Settings;
 import dev.bernasss12.controller.PlayerController;
+import dev.bernasss12.enums.EnumFacing;
+import dev.bernasss12.enums.EnumTileType;
 import dev.bernasss12.model.*;
+import dev.bernasss12.model.World.World;
 import dev.bernasss12.utilities.AnimationSet;
+
+import java.util.WeakHashMap;
 
 public class GameScreen extends AbstractScreen {
 
     private GameCamera camera;
 
-    private TileMap tileMap;
-
-    private EntityActor actor;
-    private EntityObject oTree;
-
     private SpriteBatch batch;
+
+    private World world;
+
+    private EntityActor player;
 
     private Texture brendan;
     private Texture grass;
@@ -34,9 +38,6 @@ public class GameScreen extends AbstractScreen {
 
         camera = new GameCamera();
 
-        tileMap = new TileMap(10, 10);
-
-
         brendan = new Texture("brendan_standing_south.png");
         grass = new Texture("littleroot_grass.png");
         tree = new Texture("littleroot_tree.png");
@@ -45,7 +46,6 @@ public class GameScreen extends AbstractScreen {
 
         TextureAtlas walking = app.getAssetManager().get("textures/actors/players/brendan_walking.atlas", TextureAtlas.class);
         TextureAtlas standing = app.getAssetManager().get("textures/actors/players/brendan_standing.atlas", TextureAtlas.class);
-
 
         AnimationSet animations = new AnimationSet(
                 new Animation(Settings.TIME_PER_TILE/2f, walking.findRegions("brendan_walking_north"), Animation.PlayMode.LOOP_PINGPONG),
@@ -58,13 +58,17 @@ public class GameScreen extends AbstractScreen {
                 standing.findRegion("brendan_standing_west")
                 );
 
-        actor = new EntityActor(tileMap,0, 0, animations);
 
-        oTree = new EntityObject(tileMap, 7, 7, true);
-        oTree.setTileSize(2, 2);
-        oTree.setDrawSize(2f, 2.5f);
+        world = new  World(20, 20);
+        player = new EntityActor(world.getTileMap(),0, 0, animations);
+        world.addActor(player);
+        world.getTileMap().getTile(1, 1).setType(EnumTileType.SOLID);
+        world.getTileMap().getTile(2,2).setType(EnumTileType.LEDGE);
+        world.getTileMap().getTile(2, 2).addSide(EnumFacing.UP);
+        world.addObject(new EntityObject(world.getTileMap(), 3, 4, 2, 2, 2f, 2.5f));
+        world.addObject(new EntityObject(world.getTileMap(), 5, 2, 2, 2, 2f, 2.5f));
 
-        controller = new PlayerController(actor);
+        controller = new PlayerController(player);
     }
 
     @Override
@@ -75,16 +79,16 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void render(float delta) {
         controller.update(delta);
-        actor.update(delta);
-        camera.update(actor.getDrawX()+0.5f, actor.getDrawY()+0.5f);
+        world.update(delta);
+        camera.update(player.getDrawX()+0.5f, player.getDrawY()+0.5f);
 
         batch.begin();
 
         float worldStartX = Gdx.graphics.getWidth()/2 - camera.getCameraX()*Settings.SCALED_TILE_SIZE;
         float worldStartY = Gdx.graphics.getHeight()/2 - camera.getCameraY()*Settings.SCALED_TILE_SIZE;
 
-        for(int x = 0; x < tileMap.getWidth(); x++){
-            for(int y = 0; y < tileMap.getHeight(); y++){
+        for(int x = 0; x < world.getTileMap().getWidth(); x++){
+            for(int y = 0; y < world.getTileMap().getHeight(); y++){
                 batch.draw(grass,
                         worldStartX + x * Settings.SCALED_TILE_SIZE,
                         worldStartY + y * Settings.SCALED_TILE_SIZE,
@@ -93,18 +97,22 @@ public class GameScreen extends AbstractScreen {
             }
         }
 
-        batch.draw(tree,
-                worldStartX + oTree.getX()* Settings.SCALED_TILE_SIZE,
-                worldStartY + oTree.getY()* Settings.SCALED_TILE_SIZE,
-                Settings.SCALED_TILE_SIZE * oTree.getDrawWidth(),
-                Settings.SCALED_TILE_SIZE * oTree.getDrawHeight());
+        for(Entity e : world.getEntities()){
+            if(e instanceof EntityActor){
+                batch.draw(((EntityActor) e).getSprite(),
+                        worldStartX + ((EntityActor) e).getDrawX()* Settings.SCALED_TILE_SIZE,
+                        worldStartY + ((EntityActor) e).getDrawY()* Settings.SCALED_TILE_SIZE,
+                        Settings.SCALED_TILE_SIZE * 1.0f,
+                        Settings.SCALED_TILE_SIZE * 1.5f);
+            }else{
+                batch.draw(tree,
+                        worldStartX + e.getX()* Settings.SCALED_TILE_SIZE,
+                        worldStartY + e.getY()* Settings.SCALED_TILE_SIZE,
+                        Settings.SCALED_TILE_SIZE * e.getDrawWidth(),
+                        Settings.SCALED_TILE_SIZE * e.getDrawHeight());
+            }
+        }
 
-
-        batch.draw(actor.getSprite(),
-                worldStartX + actor.getDrawX()* Settings.SCALED_TILE_SIZE,
-                worldStartY + actor.getDrawY()* Settings.SCALED_TILE_SIZE,
-                Settings.SCALED_TILE_SIZE * 1.0f,
-                Settings.SCALED_TILE_SIZE * 1.5f);
         batch.end();
     }
 

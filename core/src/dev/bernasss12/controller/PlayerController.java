@@ -3,7 +3,7 @@ package dev.bernasss12.controller;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import dev.bernasss12.model.EntityActor;
-import dev.bernasss12.model.EnumFacing;
+import dev.bernasss12.enums.EnumFacing;
 
 public class PlayerController extends InputAdapter {
 

@@ -2,7 +2,7 @@ package dev.bernasss12.utilities;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import dev.bernasss12.model.EnumFacing;
+import dev.bernasss12.enums.EnumFacing;
 
 import java.util.HashMap;
 import java.util.Map;

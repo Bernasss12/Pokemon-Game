@@ -1,5 +1,9 @@
 package dev.bernasss12.model;
 
+import dev.bernasss12.enums.EnumFacing;
+import dev.bernasss12.enums.EnumTileTerrain;
+import dev.bernasss12.enums.EnumTileType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +11,7 @@ public class Tile {
 
     private EnumTileTerrain terrain;
     private EntityActor actor;
+    private EntityObject object;
     private EnumTileType type;
     private List<EnumFacing> sides;
 
@@ -23,6 +28,10 @@ public class Tile {
     public EntityActor getActor() {
         return actor;
     }
+
+    public void setObject(EntityObject object){ this.object = object; }
+
+    public EntityObject getObject(){ return object; }
 
     public EnumTileTerrain getTerrain() {
         return terrain;

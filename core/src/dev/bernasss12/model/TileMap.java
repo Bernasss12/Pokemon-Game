@@ -1,5 +1,7 @@
 package dev.bernasss12.model;
 
+import dev.bernasss12.enums.EnumTileTerrain;
+
 public class TileMap {
 
     private int width, height;
